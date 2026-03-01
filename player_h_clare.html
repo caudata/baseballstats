@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H Clare — 2025-fall-fmysa-12u-cubs</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --accent: #3b82f6;
+      --accent-dark: #2563eb;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2d3650;
+      --green: #22c55e;
+      --red: #ef4444;
+      --gold: #f59e0b;
+      --radius: 8px;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ===== Layout ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+
+    /* ===== Header ===== */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .site-header .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .team-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .last-updated {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== Tabs ===== */
+    .tab-bar {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 2px solid var(--border);
+      margin: 1.5rem 0 1rem;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius) var(--radius) 0 0;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover { color: var(--text); background: var(--surface2); }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: -2px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ===== Tables ===== */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.875rem;
+    }
+    thead th {
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.6rem 0.75rem;
+      text-align: right;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    thead th:first-child { text-align: left; }
+    thead th:hover { color: var(--text); }
+    thead th.sort-asc::after { content: " ▲"; font-size: 0.65em; }
+    thead th.sort-desc::after { content: " ▼"; font-size: 0.65em; }
+    tbody tr { border-top: 1px solid var(--border); }
+    tbody tr:hover { background: var(--surface2); }
+    td {
+      padding: 0.55rem 0.75rem;
+      text-align: right;
+      white-space: nowrap;
+    }
+    td:first-child { text-align: left; }
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ===== Player page sections ===== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+    .section-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .section-header .toggle-icon { color: var(--text-muted); font-size: 0.8rem; }
+    .section-body { margin-bottom: 1.5rem; }
+    .section-body.collapsed { display: none; }
+
+    /* ===== Back link ===== */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin: 1rem 0;
+    }
+    .back-link:hover { color: var(--text); }
+
+    /* ===== Player header ===== */
+    .player-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .player-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      min-width: 3rem;
+      text-align: center;
+    }
+    .player-info .player-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .player-info .player-meta {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 0.2rem;
+    }
+
+    /* ===== Summary stat cards ===== */
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+    .stat-card .value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .stat-card .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 0.2rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 600px) {
+      .team-name { font-size: 1.1rem; }
+      .player-hero { flex-direction: column; align-items: flex-start; }
+      .player-number { font-size: 1.8rem; }
+    }
+  </style>
+  
+</head>
+<body>
+  <header class="site-header">
+    <div class="container inner">
+      <span class="team-name">⚾ 2025-fall-fmysa-12u-cubs</span>
+      <span class="last-updated">Updated March 1, 2026 at 11:28 AM</span>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 1rem; padding-bottom: 3rem;">
+    
+<a class="back-link" href="index.html">&#8592; Team Stats</a>
+
+<div class="player-hero">
+  <div class="player-number">#?</div>
+  <div class="player-info">
+    <div class="player-name">H Clare</div>
+    <div class="player-meta">
+      Position unknown
+      &bull; 5 games
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Season summary cards: Hitting -->
+<h2 style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:0.6rem;">Hitting Totals</h2>
+<div class="stat-cards">
+  <div class="stat-card"><div class="value">0.333</div><div class="label">AVG</div></div>
+  <div class="stat-card"><div class="value">0.333</div><div class="label">OBP</div></div>
+  <div class="stat-card"><div class="value">0.333</div><div class="label">SLG</div></div>
+  <div class="stat-card"><div class="value">0.666</div><div class="label">OPS</div></div>
+  <div class="stat-card"><div class="value">5</div><div class="label">H</div></div>
+  <div class="stat-card"><div class="value">0</div><div class="label">HR</div></div>
+  <div class="stat-card"><div class="value">5</div><div class="label">RBI</div></div>
+  <div class="stat-card"><div class="value">0</div><div class="label">SB</div></div>
+</div>
+
+
+
+<!-- Game-by-game: Hitting -->
+<div class="section-header">
+  <h2>Hitting — Game by Game</h2>
+  <span class="toggle-icon">▼</span>
+</div>
+<div class="section-body">
+  <div class="table-wrap">
+    <table class="sortable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Opp</th>
+          <th>H/A</th>
+          <th>Result</th>
+          <th>PA</th>
+          <th>AB</th>
+          <th>R</th>
+          <th>H</th>
+          <th>2B</th>
+          <th>3B</th>
+          <th>HR</th>
+          <th>RBI</th>
+          <th>BB</th>
+          <th>K</th>
+          <th>SB</th>
+          <th>CS</th>
+          <th>HBP</th>
+          <th>AVG</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+        
+        <tr>
+          <td></td>
+          <td>11U Rangers</td>
+          <td>H</td>
+          <td>L 2-9</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">1</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0.333</td>
+        </tr>
+        
+        
+        
+        
+        <tr>
+          <td></td>
+          <td>12U River Bandits</td>
+          <td>H</td>
+          <td>L 4-12</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">1</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0.333</td>
+        </tr>
+        
+        
+        
+        
+        <tr>
+          <td></td>
+          <td>12U Angels</td>
+          <td>H</td>
+          <td>W 11-1</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">1</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0.333</td>
+        </tr>
+        
+        
+        
+        
+        <tr>
+          <td></td>
+          <td>11U Longhorns</td>
+          <td>H</td>
+          <td>W 10-5</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">1</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0.333</td>
+        </tr>
+        
+        
+        
+        
+        <tr>
+          <td></td>
+          <td>11U Grasshoppers</td>
+          <td>H</td>
+          <td>T 9-9</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">1</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">1</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+          <td class="num">0.333</td>
+        </tr>
+        
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Game-by-game: Pitching -->
+
+
+
+<!-- Game-by-game: Fielding -->
+<div class="section-header">
+  <h2>Fielding — Game by Game</h2>
+  <span class="toggle-icon">▼</span>
+</div>
+<div class="section-body">
+  <div class="table-wrap">
+    <table class="sortable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Opp</th>
+          <th>H/A</th>
+          <th>Result</th>
+          <th>PO</th>
+          <th>A</th>
+          <th>E</th>
+          <th>TC</th>
+          <th>DP</th>
+          <th>FPCT</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </main>
+
+  <script>
+  // ===== Tab switcher =====
+  function initTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.closest('[data-tabs]');
+        group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        group.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        group.querySelector(btn.dataset.target).classList.add('active');
+      });
+    });
+  }
+
+  // ===== Collapsible sections =====
+  function initCollapsible() {
+    document.querySelectorAll('.section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const body = header.nextElementSibling;
+        const icon = header.querySelector('.toggle-icon');
+        body.classList.toggle('collapsed');
+        if (icon) icon.textContent = body.classList.contains('collapsed') ? '▶' : '▼';
+      });
+    });
+  }
+
+  // ===== Sortable tables =====
+  function initSortable() {
+    document.querySelectorAll('table.sortable').forEach(table => {
+      const headers = table.querySelectorAll('thead th');
+      headers.forEach((th, colIdx) => {
+        let asc = true;
+        th.addEventListener('click', () => {
+          headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+          th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+          const tbody = table.querySelector('tbody');
+          const rows = Array.from(tbody.querySelectorAll('tr'));
+          rows.sort((a, b) => {
+            const aVal = a.cells[colIdx]?.textContent.trim() ?? '';
+            const bVal = b.cells[colIdx]?.textContent.trim() ?? '';
+            // Numeric sort if both look like numbers
+            const aNum = parseFloat(aVal.replace(/[^0-9.\-]/g, ''));
+            const bNum = parseFloat(bVal.replace(/[^0-9.\-]/g, ''));
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+              return asc ? aNum - bNum : bNum - aNum;
+            }
+            return asc
+              ? aVal.localeCompare(bVal)
+              : bVal.localeCompare(aVal);
+          });
+          rows.forEach(r => tbody.appendChild(r));
+          asc = !asc;
+        });
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initTabs();
+    initCollapsible();
+    initSortable();
+  });
+  </script>
+  
+</body>
+</html>
